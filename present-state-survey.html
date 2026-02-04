@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Team - Present State | Weekly Check-In</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f7f9fc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-elevated: #f0f4f8;
+            --bg-input: #f7f9fc;
+            --text-primary: #1a2b3c;
+            --text-secondary: #4a5c6d;
+            --text-muted: #8096a7;
+            --accent-primary: #2d8fbe;
+            --accent-secondary: #3aaa8c;
+            --accent-gradient: linear-gradient(135deg, #2d8fbe, #3aaa8c);
+            --border-color: #e2e8f0;
+            --border-subtle: #edf2f7;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
+            
+            /* Mood colors - softer, friendlier versions */
+            --mood-grateful: #2eaa7f;
+            --mood-wise: #36a699;
+            --mood-creative: #3d9db3;
+            --mood-resourceful: #2d8fbe;
+            --mood-hopeful: #5080c0;
+            --mood-patient: #7272b8;
+            --mood-interested: #9066a8;
+            --mood-curious: #b05a9a;
+            --mood-bored: #d9884a;
+            --mood-irritated: #d96a5a;
+            --mood-worried: #c75a5a;
+            --mood-defensive: #b04a4a;
+            --mood-judgmental: #994040;
+            --mood-depressed: #7a3535;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+
+        .survey-container {
+            width: 100%;
+            max-width: 520px;
+            position: relative;
+        }
+
+        .survey-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.5rem 2rem;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-mark {
+            width: 100%;
+            max-width: 320px;
+            margin: 0 auto 1.5rem;
+            text-align: center;
+        }
+
+        .logo-mark img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-one {
+            background: var(--accent-gradient);
+            border-radius: 16px;
+            padding: 1rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-one-inner {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+        }
+
+        .logo-one-title {
+            font-family: 'Fraunces', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .logo-one-subtitle {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .logo-languages {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.35rem;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+        }
+
+        .logo-languages span {
+            background: var(--bg-elevated);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+        }
+
+        h1 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 0.25rem;
+            color: var(--accent-primary);
+        }
+
+        .brand-subtitle {
+            text-align: center;
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 2rem;
+        }
+
+        .week-display {
+            text-align: center;
+            background: var(--bg-elevated);
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .week-display strong {
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group label .optional {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .form-group input[type="text"],
+        .form-group select {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.875rem 1rem;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-group input[type="text"]::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(45, 143, 190, 0.1);
+        }
+
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%234a5c6d' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+        }
+
+        .anonymous-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 1.25rem;
+            background: linear-gradient(135deg, #e8f4f8, #f0f7f4);
+            border: 2px solid var(--accent-primary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .anonymous-toggle:hover {
+            background: linear-gradient(135deg, #dceef4, #e4f2eb);
+            box-shadow: 0 4px 12px rgba(45, 143, 190, 0.15);
+        }
+
+        .anonymous-toggle input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            accent-color: var(--accent-primary);
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .toggle-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+
+        .toggle-label strong {
+            color: var(--text-primary);
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 0.15rem;
+        }
+
+        .name-input-wrapper {
+            margin-top: 0.75rem;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .name-input-wrapper.show {
+            max-height: 80px;
+            opacity: 1;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-align: center;
+            color: var(--text-primary);
+        }
+
+        .mood-scale {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .mood-option {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid var(--border-subtle);
+            background: var(--bg-secondary);
+        }
+
+        .mood-option:hover {
+            background: var(--bg-elevated);
+            border-color: var(--border-color);
+            transform: translateX(4px);
+        }
+
+        .mood-option.selected {
+            border-color: currentColor;
+            background: linear-gradient(to right, currentColor, currentColor) no-repeat left/4px 100%,
+                        var(--bg-secondary);
+        }
+
+        .mood-option input {
+            display: none;
+        }
+
+        .mood-indicator {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-right: 0.875rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .mood-name {
+            font-weight: 500;
+            flex: 1;
+            color: var(--text-primary);
+        }
+
+        .mood-option.selected .mood-name {
+            font-weight: 600;
+        }
+
+        /* Mood colors */
+        .mood-14 { color: var(--mood-grateful); }
+        .mood-14 .mood-indicator { background: var(--mood-grateful); }
+        .mood-13 { color: var(--mood-wise); }
+        .mood-13 .mood-indicator { background: var(--mood-wise); }
+        .mood-12 { color: var(--mood-creative); }
+        .mood-12 .mood-indicator { background: var(--mood-creative); }
+        .mood-11 { color: var(--mood-resourceful); }
+        .mood-11 .mood-indicator { background: var(--mood-resourceful); }
+        .mood-10 { color: var(--mood-hopeful); }
+        .mood-10 .mood-indicator { background: var(--mood-hopeful); }
+        .mood-9 { color: var(--mood-patient); }
+        .mood-9 .mood-indicator { background: var(--mood-patient); }
+        .mood-8 { color: var(--mood-interested); }
+        .mood-8 .mood-indicator { background: var(--mood-interested); }
+        .mood-7 { color: var(--mood-curious); }
+        .mood-7 .mood-indicator { background: var(--mood-curious); }
+        .mood-6 { color: var(--mood-bored); }
+        .mood-6 .mood-indicator { background: var(--mood-bored); }
+        .mood-5 { color: var(--mood-irritated); }
+        .mood-5 .mood-indicator { background: var(--mood-irritated); }
+        .mood-4 { color: var(--mood-worried); }
+        .mood-4 .mood-indicator { background: var(--mood-worried); }
+        .mood-3 { color: var(--mood-defensive); }
+        .mood-3 .mood-indicator { background: var(--mood-defensive); }
+        .mood-2 { color: var(--mood-judgmental); }
+        .mood-2 .mood-indicator { background: var(--mood-judgmental); }
+        .mood-1 { color: var(--mood-depressed); }
+        .mood-1 .mood-indicator { background: var(--mood-depressed); }
+
+        .comment-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .comment-section label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-section textarea {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            resize: vertical;
+            min-height: 90px;
+            transition: all 0.2s;
+        }
+
+        .comment-section textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .comment-section textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(45, 143, 190, 0.1);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--accent-gradient);
+            border: none;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(45, 143, 190, 0.25);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .privacy-note {
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .privacy-note svg {
+            flex-shrink: 0;
+        }
+
+        .privacy-note.named {
+            color: var(--accent-primary);
+        }
+
+        /* Success State */
+        .success-view {
+            display: none;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        .success-view.active {
+            display: block;
+        }
+
+        .survey-form.hidden {
+            display: none;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #2eaa7f, #36a699);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            animation: scaleIn 0.4s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+
+        .success-view h2 {
+            font-family: 'Fraunces', serif;
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--mood-grateful);
+        }
+
+        .success-view p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .success-mood {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-name {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .another-btn {
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .another-btn:hover {
+            background: var(--bg-input);
+        }
+
+        /* Already Submitted State */
+        .already-submitted {
+            text-align: center;
+            padding: 1rem;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        .already-submitted.show {
+            display: block;
+        }
+
+        .already-submitted p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .already-submitted .update-link {
+            color: var(--accent-primary);
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="survey-container">
+        <div class="survey-card">
+            <div class="logo-mark">
+                <div class="logo-one">
+                    <div class="logo-one-inner">
+                        <div class="logo-one-title">ONE</div>
+                        <div class="logo-one-subtitle">Across All Languages</div>
+                        <div class="logo-languages">
+                            <span>uno</span>
+                            <span>eins</span>
+                            <span>один</span>
+                            <span>一</span>
+                            <span>하나</span>
+                            <span>واحد</span>
+                            <span>एक</span>
+                            <span>moja</span>
+                            <span>ichi</span>
+                            <span>um</span>
+                            <span>bir</span>
+                            <span>aon</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h1>Language Team</h1>
+            <p class="brand-subtitle">Present State</p>
+            <p class="subtitle">Enterprise Language Services & Access</p>
+
+            <div class="week-display">
+                Week of <strong id="weekDisplay"></strong>
+            </div>
+
+            <div class="already-submitted" id="alreadySubmitted">
+                <p>✓ You've already submitted for this week. <span class="update-link" onclick="allowUpdate()">Update your response?</span></p>
+            </div>
+
+            <form class="survey-form" id="surveyForm">
+                <!-- Identity Section -->
+                <div class="form-group">
+                    <label class="anonymous-toggle" for="includeNameToggle">
+                        <input type="checkbox" id="includeNameToggle" onchange="toggleNameInput()">
+                        <span class="toggle-label">
+                            <strong>Include my name</strong>
+                            Share your identity with leadership
+                        </span>
+                    </label>
+                    <div class="name-input-wrapper" id="nameInputWrapper">
+                        <input type="text" id="userName" placeholder="Enter your name...">
+                    </div>
+                </div>
+
+                <!-- Region -->
+                <div class="form-group">
+                    <label for="region">Your Region <span class="optional">(optional)</span></label>
+                    <select id="region">
+                        <option value="">— Select Region —</option>
+                        <option value="illinois">Illinois</option>
+                        <option value="wisconsin">Wisconsin</option>
+                        <option value="north-carolina">North Carolina</option>
+                        <option value="south-carolina">South Carolina</option>
+                        <option value="georgia">Georgia</option>
+                        <option value="alabama">Alabama</option>
+                    </select>
+                </div>
+
+                <p class="question-text">How are you feeling at this moment?</p>
+
+                <div class="mood-scale" id="moodScale">
+                    <!-- Populated by JS -->
+                </div>
+
+                <div class="comment-section">
+                    <label for="comment">Anything you'd like to share? <span class="optional">(optional)</span></label>
+                    <textarea id="comment" placeholder="What's influencing your mood? Any feedback for leadership?"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn" disabled>Submit Check-In</button>
+
+                <p class="privacy-note" id="privacyNote">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0110 0v4"/>
+                    </svg>
+                    <span id="privacyText">Your response is anonymous</span>
+                </p>
+            </form>
+
+            <div class="success-view" id="successView">
+                <div class="success-icon">
+                    <svg width="40" height="40" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24">
+                        <path d="M5 13l4 4L19 7"/>
+                    </svg>
+                </div>
+                <h2>Thank You!</h2>
+                <p>Your check-in has been recorded.</p>
+                <div class="success-name" id="successName"></div>
+                <div class="success-mood" id="successMood"></div>
+                <p style="font-size: 0.9rem; color: var(--text-muted);">Your feedback helps us build a better workplace.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mood Elevator Levels
+        const moodLevels = [
+            { score: 14, name: 'Grateful', color: '#2eaa7f' },
+            { score: 13, name: 'Wise', color: '#36a699' },
+            { score: 12, name: 'Creative', color: '#3d9db3' },
+            { score: 11, name: 'Resourceful', color: '#2d8fbe' },
+            { score: 10, name: 'Hopeful', color: '#5080c0' },
+            { score: 9, name: 'Patient', color: '#7272b8' },
+            { score: 8, name: 'Interested', color: '#9066a8' },
+            { score: 7, name: 'Curious', color: '#b05a9a' },
+            { score: 6, name: 'Bored', color: '#d9884a' },
+            { score: 5, name: 'Irritated', color: '#d96a5a' },
+            { score: 4, name: 'Worried', color: '#c75a5a' },
+            { score: 3, name: 'Defensive', color: '#b04a4a' },
+            { score: 2, name: 'Judgmental', color: '#994040' },
+            { score: 1, name: 'Depressed', color: '#7a3535' }
+        ];
+
+        let selectedMood = null;
+        let currentWeekKey = '';
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setCurrentWeek();
+            renderMoodScale();
+            checkExistingSubmission();
+
+            document.getElementById('surveyForm').addEventListener('submit', handleSubmit);
+        });
+
+        function getMonday(date) {
+            const d = new Date(date);
+            const day = d.getDay();
+            const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+            return new Date(d.setDate(diff));
+        }
+
+        function setCurrentWeek() {
+            const monday = getMonday(new Date());
+            const sunday = new Date(monday);
+            sunday.setDate(sunday.getDate() + 6);
+
+            const options = { month: 'short', day: 'numeric' };
+            const mondayStr = monday.toLocaleDateString('en-US', options);
+            const sundayStr = sunday.toLocaleDateString('en-US', { ...options, year: 'numeric' });
+
+            document.getElementById('weekDisplay').textContent = `${mondayStr} – ${sundayStr}`;
+            currentWeekKey = monday.toISOString().split('T')[0];
+        }
+
+        function renderMoodScale() {
+            const scaleHTML = moodLevels.map(level => `
+                <label class="mood-option mood-${level.score}" onclick="selectMood(${level.score})">
+                    <input type="radio" name="mood" value="${level.score}">
+                    <div class="mood-indicator">${level.score}</div>
+                    <span class="mood-name">${level.name}</span>
+                </label>
+            `).join('');
+
+            document.getElementById('moodScale').innerHTML = scaleHTML;
+        }
+
+        function selectMood(score) {
+            selectedMood = score;
+            
+            document.querySelectorAll('.mood-option').forEach(el => {
+                el.classList.remove('selected');
+            });
+            
+            event.currentTarget.classList.add('selected');
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        function toggleNameInput() {
+            const isChecked = document.getElementById('includeNameToggle').checked;
+            const wrapper = document.getElementById('nameInputWrapper');
+            const privacyNote = document.getElementById('privacyNote');
+            const privacyText = document.getElementById('privacyText');
+
+            if (isChecked) {
+                wrapper.classList.add('show');
+                privacyNote.classList.add('named');
+                privacyText.innerHTML = '<strong>Your name will be visible</strong> to leadership';
+            } else {
+                wrapper.classList.remove('show');
+                privacyNote.classList.remove('named');
+                privacyText.textContent = 'Your response is anonymous';
+                document.getElementById('userName').value = '';
+            }
+        }
+
+        function checkExistingSubmission() {
+            const submissions = JSON.parse(localStorage.getItem('presentState_submissions')) || {};
+            const visitorId = getVisitorId();
+            
+            if (submissions[`${visitorId}_${currentWeekKey}`]) {
+                document.getElementById('alreadySubmitted').classList.add('show');
+                document.getElementById('surveyForm').classList.add('hidden');
+                
+                // Show success view with previous submission
+                const prev = submissions[`${visitorId}_${currentWeekKey}`];
+                showSuccess(prev.score, prev.name, true);
+            }
+        }
+
+        function allowUpdate() {
+            document.getElementById('alreadySubmitted').classList.remove('show');
+            document.getElementById('surveyForm').classList.remove('hidden');
+            document.getElementById('successView').classList.remove('active');
+        }
+
+        function getVisitorId() {
+            let id = localStorage.getItem('presentState_visitorId');
+            if (!id) {
+                id = 'v_' + Math.random().toString(36).substr(2, 9);
+                localStorage.setItem('presentState_visitorId', id);
+            }
+            return id;
+        }
+
+        function handleSubmit(e) {
+            e.preventDefault();
+
+            if (!selectedMood) return;
+
+            const includeName = document.getElementById('includeNameToggle').checked;
+            const userName = includeName ? document.getElementById('userName').value.trim() : null;
+            const region = document.getElementById('region').value;
+            const comment = document.getElementById('comment').value.trim();
+            const visitorId = getVisitorId();
+
+            // Create submission record
+            const submission = {
+                id: Date.now().toString(),
+                score: selectedMood,
+                name: userName || null,
+                isAnonymous: !userName,
+                region: region || null,
+                comment: comment || null,
+                week: currentWeekKey,
+                timestamp: new Date().toISOString()
+            };
+
+            // Save to shared responses (for admin dashboard)
+            const responses = JSON.parse(localStorage.getItem('presentState_responses')) || [];
+            
+            // Remove any existing response from this visitor for this week
+            const filteredResponses = responses.filter(r => 
+                !(r.visitorId === visitorId && r.week === currentWeekKey)
+            );
+            
+            filteredResponses.push({
+                ...submission,
+                visitorId: visitorId
+            });
+            
+            localStorage.setItem('presentState_responses', JSON.stringify(filteredResponses));
+
+            // Mark as submitted for this visitor
+            const submissions = JSON.parse(localStorage.getItem('presentState_submissions')) || {};
+            submissions[`${visitorId}_${currentWeekKey}`] = submission;
+            localStorage.setItem('presentState_submissions', JSON.stringify(submissions));
+
+            // Show success
+            showSuccess(selectedMood, userName, false);
+        }
+
+        function showSuccess(score, name, isUpdate) {
+            const mood = moodLevels.find(m => m.score === score);
+            
+            document.getElementById('surveyForm').classList.add('hidden');
+            document.getElementById('alreadySubmitted').classList.remove('show');
+            
+            // Show name if provided
+            const successName = document.getElementById('successName');
+            if (name) {
+                successName.textContent = `Submitted as: ${name}`;
+                successName.style.display = 'block';
+            } else {
+                successName.textContent = 'Submitted anonymously';
+                successName.style.display = 'block';
+            }
+
+            const successMood = document.getElementById('successMood');
+            successMood.style.background = `${mood.color}15`;
+            successMood.style.color = mood.color;
+            successMood.innerHTML = `
+                <span style="width: 12px; height: 12px; border-radius: 50%; background: ${mood.color}"></span>
+                You're feeling: ${mood.name}
+            `;
+
+            document.getElementById('successView').classList.add('active');
+        }
+
+        function getMoodByScore(score) {
+            return moodLevels.find(m => m.score === score) || moodLevels[7];
+        }
+    </script>
+</body>
+</html>

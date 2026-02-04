@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Language Team - Present State | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #f7f9fc; --bg-secondary: #ffffff; --bg-card: #ffffff;
+            --bg-elevated: #f0f4f8; --bg-input: #f7f9fc;
+            --text-primary: #1a2b3c; --text-secondary: #4a5c6d; --text-muted: #8096a7;
+            --accent-primary: #2d8fbe; --accent-secondary: #3aaa8c;
+            --accent-gradient: linear-gradient(135deg, #2d8fbe, #3aaa8c);
+            --border-color: #e2e8f0; --border-subtle: #edf2f7;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06); --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg-primary); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .dashboard { max-width: 1440px; margin: 0 auto; padding: 2rem; }
+        header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .logo-mark { display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--accent-gradient); border-radius: 12px; padding: 0.5rem; box-shadow: var(--shadow-md); min-width: 70px; }
+        .logo-mark-inner { background: white; border-radius: 8px; padding: 0.4rem 0.6rem; text-align: center; }
+        .logo-mark-title { font-family: 'Fraunces', serif; font-size: 1.1rem; font-weight: 700; color: #2d8fbe; line-height: 1; }
+        .logo-mark-langs { font-size: 0.45rem; color: #4a5c6d; display: flex; gap: 0.2rem; justify-content: center; flex-wrap: wrap; margin-top: 0.2rem; }
+        .header-text h1 { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 700; color: var(--accent-primary); }
+        .header-text .brand-subtitle { font-size: 1.1rem; font-weight: 600; color: var(--text-primary); }
+        .header-text p { color: var(--text-secondary); font-size: 0.85rem; }
+        .header-actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+        .btn { background: var(--accent-gradient); border: none; color: white; padding: 0.7rem 1.1rem; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; box-shadow: var(--shadow-sm); }
+        .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .btn-secondary { background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-primary); }
+        .btn-secondary:hover { background: var(--bg-elevated); }
+        .week-nav { display: flex; align-items: center; gap: 0.5rem; background: var(--bg-card); padding: 0.4rem; border-radius: 10px; border: 1px solid var(--border-color); }
+        .week-nav button { background: var(--bg-elevated); border: none; color: var(--text-primary); width: 34px; height: 34px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .week-nav button:hover { background: var(--border-color); }
+        .week-nav span { font-weight: 500; font-size: 0.9rem; min-width: 170px; text-align: center; }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+        .stat-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.25rem; position: relative; overflow: hidden; box-shadow: var(--shadow-sm); }
+        .stat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent-gradient); }
+        .stat-label { color: var(--text-muted); font-size: 0.8rem; margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .stat-value { font-family: 'Fraunces', serif; font-size: 2.25rem; font-weight: 700; line-height: 1.2; }
+        .stat-subtitle { font-size: 0.85rem; margin-top: 0.2rem; color: var(--text-secondary); }
+        .stat-change { display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; padding: 0.2rem 0.5rem; border-radius: 6px; margin-top: 0.4rem; }
+        .stat-change.positive { background: rgba(46,170,127,0.1); color: #2eaa7f; }
+        .stat-change.negative { background: rgba(217,106,90,0.1); color: #d96a5a; }
+        .stat-change.neutral { background: var(--bg-elevated); color: var(--text-secondary); }
+        .view-tabs { display: flex; gap: 0.25rem; background: var(--bg-card); padding: 0.25rem; border-radius: 10px; margin-bottom: 1.5rem; width: fit-content; border: 1px solid var(--border-color); }
+        .view-tab { background: transparent; border: none; color: var(--text-secondary); padding: 0.6rem 1.25rem; border-radius: 8px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; }
+        .view-tab:hover { color: var(--text-primary); background: var(--bg-elevated); }
+        .view-tab.active { background: var(--accent-gradient); color: white; }
+        .main-grid { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; }
+        @media (max-width: 1100px) { .main-grid { grid-template-columns: 1fr; } }
+        .panel { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 1.25rem; box-shadow: var(--shadow-sm); }
+        .panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem; }
+        .panel-title { font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 600; display: flex; align-items: center; gap: 0.6rem; }
+        .panel-title .icon { width: 30px; height: 30px; background: var(--accent-gradient); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+        .chart-container { height: 280px; position: relative; }
+        .responses-table-container { overflow-x: auto; max-height: 400px; overflow-y: auto; }
+        .responses-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.9rem; }
+        .responses-table th, .responses-table td { padding: 0.875rem 1rem; text-align: left; border-bottom: 1px solid var(--border-subtle); }
+        .responses-table th { background: var(--bg-elevated); font-weight: 600; color: var(--text-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; position: sticky; top: 0; z-index: 10; }
+        .responses-table tr:hover td { background: var(--bg-elevated); }
+        .name-cell { display: flex; align-items: center; gap: 0.5rem; }
+        .name-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 700; color: white; flex-shrink: 0; }
+        .anonymous-badge { background: var(--bg-elevated); color: var(--text-muted); font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: 4px; }
+        .mood-badge { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.65rem; border-radius: 16px; font-size: 0.8rem; font-weight: 500; }
+        .mood-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .comment-cell { max-width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-secondary); font-size: 0.85rem; }
+        .region-list { display: flex; flex-direction: column; gap: 0.6rem; }
+        .region-item { background: var(--bg-elevated); border-radius: 10px; padding: 0.875rem; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-subtle); }
+        .region-info { display: flex; align-items: center; gap: 0.6rem; }
+        .region-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .region-name { font-weight: 500; font-size: 0.9rem; }
+        .region-count { font-size: 0.8rem; color: var(--text-muted); }
+        .region-score { font-family: 'Fraunces', serif; font-size: 1.35rem; font-weight: 700; }
+        .distribution-bar { display: flex; height: 20px; border-radius: 10px; overflow: hidden; margin-bottom: 0.75rem; }
+        .distribution-segment { transition: all 0.3s ease; }
+        .distribution-legend { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+        .legend-item { display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; color: var(--text-secondary); }
+        .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .feedback-section { grid-column: 1 / -1; }
+        .feedback-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; max-height: 450px; overflow-y: auto; }
+        .feedback-card { background: var(--bg-elevated); border-radius: 12px; padding: 1.1rem; border-left: 4px solid; }
+        .feedback-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem; gap: 0.5rem; }
+        .feedback-from { display: flex; align-items: center; gap: 0.5rem; }
+        .feedback-name { font-weight: 500; font-size: 0.9rem; }
+        .feedback-meta { text-align: right; }
+        .feedback-mood { display: flex; align-items: center; gap: 0.35rem; font-size: 0.8rem; font-weight: 500; }
+        .feedback-region { font-size: 0.75rem; color: var(--text-muted); }
+        .feedback-text { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
+        .no-data { grid-column: 1 / -1; text-align: center; padding: 2.5rem; color: var(--text-muted); }
+        .filter-tabs { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .filter-tab { background: var(--bg-elevated); border: 1px solid var(--border-subtle); color: var(--text-secondary); padding: 0.35rem 0.8rem; border-radius: 6px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; transition: all 0.2s; }
+        .filter-tab:hover { background: var(--border-color); color: var(--text-primary); }
+        .filter-tab.active { background: var(--accent-gradient); color: white; border-color: transparent; }
+        .share-panel { grid-column: 1 / -1; }
+        .share-content { display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap; }
+        .share-info { flex: 1; min-width: 250px; }
+        .share-info p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.75rem; }
+        .share-link-box { display: flex; gap: 0.5rem; }
+        .share-link-box input { flex: 1; background: var(--bg-input); border: 1px solid var(--border-color); color: var(--text-primary); padding: 0.7rem 1rem; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; }
+        .share-stats { display: flex; gap: 1.5rem; }
+        .share-stat { text-align: center; }
+        .share-stat-value { font-family: 'Fraunces', serif; font-size: 1.75rem; font-weight: 700; color: var(--accent-primary); }
+        .share-stat-label { font-size: 0.8rem; color: var(--text-muted); }
+        .toast { position: fixed; bottom: 2rem; right: 2rem; background: var(--bg-card); border: 1px solid var(--border-color); padding: 0.875rem 1.25rem; border-radius: 10px; box-shadow: var(--shadow-lg); transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 1000; font-size: 0.9rem; }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast.success { border-left: 4px solid #2eaa7f; }
+        @media (max-width: 768px) { .dashboard { padding: 1rem; } header { flex-direction: column; } .stats-grid { grid-template-columns: repeat(2, 1fr); } }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <header>
+            <div class="header-left">
+                <div class="logo-mark"><div class="logo-mark-inner"><div class="logo-mark-title">ONE</div><div class="logo-mark-langs"><span>uno</span><span>एक</span><span>一</span><span>moja</span></div></div></div>
+                <div class="header-text">
+                    <h1>Language Team</h1>
+                    <div class="brand-subtitle">Present State</div>
+                    <p>Enterprise Language Services & Access</p>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="week-nav">
+                    <button onclick="changeWeek(-1)"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 4l-6 6 6 6"/></svg></button>
+                    <span id="weekDisplay"></span>
+                    <button onclick="changeWeek(1)"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 4l6 6-6 6"/></svg></button>
+                </div>
+                <button class="btn btn-secondary" onclick="exportData()">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v2h8v-2M8 2v8M5 7l3 3 3-3"/></svg>
+                    Export
+                </button>
+            </div>
+        </header>
+        <div class="stats-grid" id="statsGrid"></div>
+        <div class="view-tabs">
+            <button class="view-tab active" data-view="overview" onclick="switchView('overview')">Overview</button>
+            <button class="view-tab" data-view="individuals" onclick="switchView('individuals')">Individual Responses</button>
+            <button class="view-tab" data-view="feedback" onclick="switchView('feedback')">Feedback</button>
+        </div>
+        <div class="view-content" id="overviewView">
+            <div class="main-grid">
+                <div class="panel"><div class="panel-header"><h2 class="panel-title"><span class="icon">📈</span>8-Week Trend</h2></div><div class="chart-container"><canvas id="trendChart"></canvas></div></div>
+                <div class="panel"><div class="panel-header"><h2 class="panel-title"><span class="icon">🗺️</span>By Region</h2></div><div class="region-list" id="regionList"></div></div>
+                <div class="panel"><div class="panel-header"><h2 class="panel-title"><span class="icon">📊</span>Mood Distribution</h2></div><div class="distribution-bar" id="distributionBar"></div><div class="distribution-legend" id="distributionLegend"></div></div>
+                <div class="panel share-panel"><div class="panel-header"><h2 class="panel-title"><span class="icon">🔗</span>Share Survey</h2></div><div class="share-content"><div class="share-info"><p>Share with your team. Responses can be anonymous or named.</p><div class="share-link-box"><input type="text" id="surveyLink" readonly value="present-state-survey.html"><button class="btn" onclick="copySurveyLink()">Copy</button></div></div><div class="share-stats" id="shareStats"></div></div></div>
+            </div>
+        </div>
+        <div class="view-content" id="individualsView" style="display:none;">
+            <div class="panel"><div class="panel-header"><h2 class="panel-title"><span class="icon">👤</span>Individual Responses</h2><div class="filter-tabs"><button class="filter-tab active" onclick="filterResponses('all')">All</button><button class="filter-tab" onclick="filterResponses('named')">Named</button><button class="filter-tab" onclick="filterResponses('anonymous')">Anonymous</button></div></div><div class="responses-table-container"><table class="responses-table"><thead><tr><th>Name</th><th>Region</th><th>Mood</th><th>Score</th><th>Comment</th><th>Date</th></tr></thead><tbody id="responsesBody"></tbody></table></div></div>
+        </div>
+        <div class="view-content" id="feedbackView" style="display:none;">
+            <div class="panel feedback-section"><div class="panel-header"><h2 class="panel-title"><span class="icon">💬</span>Team Feedback</h2><div class="filter-tabs" id="feedbackFilters"><button class="filter-tab active" data-filter="all" onclick="filterFeedback('all')">All</button><button class="filter-tab" data-filter="named" onclick="filterFeedback('named')">Named</button><button class="filter-tab" data-filter="anonymous" onclick="filterFeedback('anonymous')">Anonymous</button><button class="filter-tab" data-filter="low" onclick="filterFeedback('low')">Low Moods</button></div></div><div class="feedback-grid" id="feedbackGrid"></div></div>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const moodLevels = [
+            {score:14,name:'Grateful',color:'#2eaa7f'},{score:13,name:'Wise',color:'#36a699'},{score:12,name:'Creative',color:'#3d9db3'},
+            {score:11,name:'Resourceful',color:'#2d8fbe'},{score:10,name:'Hopeful',color:'#5080c0'},{score:9,name:'Patient',color:'#7272b8'},
+            {score:8,name:'Interested',color:'#9066a8'},{score:7,name:'Curious',color:'#b05a9a'},{score:6,name:'Bored',color:'#d9884a'},
+            {score:5,name:'Irritated',color:'#d96a5a'},{score:4,name:'Worried',color:'#c75a5a'},{score:3,name:'Defensive',color:'#b04a4a'},
+            {score:2,name:'Judgmental',color:'#994040'},{score:1,name:'Depressed',color:'#7a3535'}
+        ];
+        const regions = [{id:'illinois',name:'Illinois',color:'#2d8fbe'},{id:'wisconsin',name:'Wisconsin',color:'#2eaa7f'},{id:'north-carolina',name:'North Carolina',color:'#7272b8'},{id:'south-carolina',name:'South Carolina',color:'#d9884a'},{id:'georgia',name:'Georgia',color:'#d96a5a'},{id:'alabama',name:'Alabama',color:'#3d9db3'}];
+        let currentWeek=getMonday(new Date()),chart=null,responseFilter='all',feedbackFilter='all';
+        document.addEventListener('DOMContentLoaded',()=>{updateWeekDisplay();renderStats();renderRegions();renderDistribution();renderResponses();renderFeedback();renderShareStats();initChart();if(getResponses().length===0)addDemoDataPrompt();});
+        function getMonday(d){const date=new Date(d),day=date.getDay(),diff=date.getDate()-day+(day===0?-6:1);return new Date(date.setDate(diff));}
+        function formatWeekRange(m){const s=new Date(m);s.setDate(s.getDate()+6);return `${m.toLocaleDateString('en-US',{month:'short',day:'numeric'})} – ${s.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`;}
+        function getWeekKey(d){return getMonday(new Date(d)).toISOString().split('T')[0];}
+        function getMoodByScore(s){return moodLevels.find(m=>m.score===s)||moodLevels[7];}
+        function getResponses(){return JSON.parse(localStorage.getItem('presentState_responses'))||[];}
+        function getWeekResponses(w){return getResponses().filter(r=>r.week===w);}
+        function generateColor(n){let h=0;for(let i=0;i<n.length;i++)h=n.charCodeAt(i)+((h<<5)-h);return `hsl(${h%360},60%,50%)`;}
+        function getInitials(n){return n.split(' ').map(x=>x[0]).join('').toUpperCase().slice(0,2);}
+        function updateWeekDisplay(){document.getElementById('weekDisplay').textContent=formatWeekRange(currentWeek);}
+        function changeWeek(d){currentWeek=new Date(currentWeek);currentWeek.setDate(currentWeek.getDate()+(d*7));updateWeekDisplay();renderStats();renderRegions();renderDistribution();renderResponses();renderFeedback();renderShareStats();updateChart();}
+        function switchView(v){document.querySelectorAll('.view-tab').forEach(t=>t.classList.toggle('active',t.dataset.view===v));document.getElementById('overviewView').style.display=v==='overview'?'block':'none';document.getElementById('individualsView').style.display=v==='individuals'?'block':'none';document.getElementById('feedbackView').style.display=v==='feedback'?'block':'none';}
+        function renderStats(){const wk=getWeekKey(currentWeek),wr=getWeekResponses(wk),pw=new Date(currentWeek);pw.setDate(pw.getDate()-7);const pwr=getWeekResponses(getWeekKey(pw)),ar=getResponses();const wa=wr.length>0?wr.reduce((s,r)=>s+r.score,0)/wr.length:null,pa=pwr.length>0?pwr.reduce((s,r)=>s+r.score,0)/pwr.length:null,ch=wa&&pa?wa-pa:null,wm=wa?getMoodByScore(Math.round(wa)):null,nc=wr.filter(r=>r.name).length,ac=wr.filter(r=>!r.name).length;
+            document.getElementById('statsGrid').innerHTML=`<div class="stat-card"><div class="stat-label">This Week's Average</div><div class="stat-value" style="color:${wm?.color||'var(--text-muted)'}">${wa?wa.toFixed(1):'—'}</div><div class="stat-subtitle" style="color:${wm?.color||'var(--text-muted)'}">${wm?.name||'No data yet'}</div>${ch!==null?`<div class="stat-change ${ch>0?'positive':ch<0?'negative':'neutral'}">${ch>0?'↑':ch<0?'↓':'→'} ${Math.abs(ch).toFixed(1)} vs last week</div>`:''}</div><div class="stat-card"><div class="stat-label">Total Responses</div><div class="stat-value">${wr.length}</div><div class="stat-subtitle">This week</div></div><div class="stat-card"><div class="stat-label">Named</div><div class="stat-value" style="color:var(--accent-primary)">${nc}</div><div class="stat-subtitle">${wr.length>0?Math.round((nc/wr.length)*100):0}% identified</div></div><div class="stat-card"><div class="stat-label">Anonymous</div><div class="stat-value">${ac}</div><div class="stat-subtitle">${wr.length>0?Math.round((ac/wr.length)*100):0}% anonymous</div></div><div class="stat-card"><div class="stat-label">With Comments</div><div class="stat-value">${wr.filter(r=>r.comment).length}</div><div class="stat-subtitle">${wr.length>0?Math.round((wr.filter(r=>r.comment).length/wr.length)*100):0}% left feedback</div></div>`;}
+        function renderRegions(){const wk=getWeekKey(currentWeek),wr=getWeekResponses(wk);const rd=regions.map(r=>{const rr=wr.filter(x=>x.region===r.id),av=rr.length>0?rr.reduce((s,x)=>s+x.score,0)/rr.length:null;return{...r,count:rr.length,avg:av};}).sort((a,b)=>(b.avg||0)-(a.avg||0));const us=wr.filter(r=>!r.region);if(us.length>0){const av=us.reduce((s,r)=>s+r.score,0)/us.length;rd.push({id:'unspecified',name:'Not Specified',color:'#8096a7',count:us.length,avg:av});}if(wr.length===0){document.getElementById('regionList').innerHTML='<div style="text-align:center;padding:1.5rem;color:var(--text-muted)">No responses this week</div>';return;}document.getElementById('regionList').innerHTML=rd.filter(r=>r.count>0).map(r=>{const m=r.avg?getMoodByScore(Math.round(r.avg)):null;return`<div class="region-item"><div class="region-info"><div class="region-dot" style="background:${r.color}"></div><div><div class="region-name">${r.name}</div><div class="region-count">${r.count} response${r.count!==1?'s':''}</div></div></div><div class="region-score" style="color:${m?.color||'var(--text-muted)'}">${r.avg?r.avg.toFixed(1):'—'}</div></div>`;}).join('');}
+        function renderDistribution(){const wk=getWeekKey(currentWeek),wr=getWeekResponses(wk);if(wr.length===0){document.getElementById('distributionBar').innerHTML='';document.getElementById('distributionLegend').innerHTML='<span style="color:var(--text-muted)">No data</span>';return;}const cats=[{name:'High (11-14)',range:[11,14],color:'#2eaa7f'},{name:'Good (8-10)',range:[8,10],color:'#2d8fbe'},{name:'Neutral (6-7)',range:[6,7],color:'#d9884a'},{name:'Low (1-5)',range:[1,5],color:'#d96a5a'}];const dist=cats.map(c=>{const cnt=wr.filter(r=>r.score>=c.range[0]&&r.score<=c.range[1]).length;return{...c,count:cnt,percent:(cnt/wr.length)*100};});document.getElementById('distributionBar').innerHTML=dist.filter(d=>d.percent>0).map(d=>`<div class="distribution-segment" style="width:${d.percent}%;background:${d.color}"></div>`).join('');document.getElementById('distributionLegend').innerHTML=dist.map(d=>`<div class="legend-item"><div class="legend-dot" style="background:${d.color}"></div><span>${d.name}: ${d.count} (${d.percent.toFixed(0)}%)</span></div>`).join('');}
+        function renderResponses(){const wk=getWeekKey(currentWeek);let wr=getWeekResponses(wk);if(responseFilter==='named')wr=wr.filter(r=>r.name);else if(responseFilter==='anonymous')wr=wr.filter(r=>!r.name);wr.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));if(wr.length===0){document.getElementById('responsesBody').innerHTML='<tr><td colspan="6" class="no-data">No responses matching filter</td></tr>';return;}document.getElementById('responsesBody').innerHTML=wr.map(r=>{const m=getMoodByScore(r.score),rg=regions.find(x=>x.id===r.region),dt=new Date(r.timestamp);return`<tr><td><div class="name-cell">${r.name?`<span class="name-avatar" style="background:${generateColor(r.name)}">${getInitials(r.name)}</span>${r.name}`:`<span class="name-avatar" style="background:var(--bg-elevated);color:var(--text-muted)">?</span><span class="anonymous-badge">Anonymous</span>`}</div></td><td>${rg?.name||'—'}</td><td><span class="mood-badge" style="background:${m.color}15;color:${m.color}"><span class="mood-dot" style="background:${m.color}"></span>${m.name}</span></td><td style="font-weight:600;color:${m.color}">${r.score}</td><td class="comment-cell">${r.comment||'—'}</td><td style="color:var(--text-muted)">${dt.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</td></tr>`;}).join('');}
+        function filterResponses(f){responseFilter=f;document.querySelectorAll('#individualsView .filter-tab').forEach(t=>t.classList.toggle('active',t.textContent.toLowerCase()===f));renderResponses();}
+        function renderFeedback(){const wk=getWeekKey(currentWeek);let wr=getWeekResponses(wk).filter(r=>r.comment);if(feedbackFilter==='named')wr=wr.filter(r=>r.name);else if(feedbackFilter==='anonymous')wr=wr.filter(r=>!r.name);else if(feedbackFilter==='low')wr=wr.filter(r=>r.score<=6);if(wr.length===0){document.getElementById('feedbackGrid').innerHTML='<div class="no-data">No feedback matching filter</div>';return;}document.getElementById('feedbackGrid').innerHTML=wr.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(r=>{const m=getMoodByScore(r.score),rg=regions.find(x=>x.id===r.region);return`<div class="feedback-card" style="border-color:${m.color}"><div class="feedback-header"><div class="feedback-from">${r.name?`<span class="name-avatar" style="background:${generateColor(r.name)};width:24px;height:24px;font-size:0.65rem">${getInitials(r.name)}</span><span class="feedback-name">${r.name}</span>`:`<span class="name-avatar" style="background:var(--bg-elevated);color:var(--text-muted);width:24px;height:24px;font-size:0.65rem">?</span><span class="feedback-name" style="color:var(--text-muted)">Anonymous</span>`}</div><div class="feedback-meta"><div class="feedback-mood" style="color:${m.color}"><span class="mood-dot" style="background:${m.color}"></span>${m.name}</div><div class="feedback-region">${rg?.name||'Region not specified'}</div></div></div><p class="feedback-text">"${r.comment}"</p></div>`;}).join('');}
+        function filterFeedback(f){feedbackFilter=f;document.querySelectorAll('#feedbackFilters .filter-tab').forEach(t=>t.classList.toggle('active',t.dataset.filter===f));renderFeedback();}
+        function renderShareStats(){const ar=getResponses(),up=new Set(ar.map(r=>r.visitorId)).size,tw=new Set(ar.map(r=>r.week)).size;document.getElementById('shareStats').innerHTML=`<div class="share-stat"><div class="share-stat-value">${ar.length}</div><div class="share-stat-label">Total Responses</div></div><div class="share-stat"><div class="share-stat-value">${up}</div><div class="share-stat-label">Participants</div></div><div class="share-stat"><div class="share-stat-value">${tw}</div><div class="share-stat-label">Weeks</div></div>`;}
+        function initChart(){const ctx=document.getElementById('trendChart').getContext('2d');chart=new Chart(ctx,{type:'line',data:{labels:[],datasets:[{label:'Team Average',data:[],borderColor:'#2d8fbe',backgroundColor:'rgba(45,143,190,0.1)',tension:0.3,fill:true,pointRadius:5,pointHoverRadius:7,pointBackgroundColor:'#2d8fbe'}]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},scales:{y:{min:1,max:14,ticks:{stepSize:2,color:'#8096a7',font:{size:10}},grid:{color:'rgba(0,0,0,0.05)'}},x:{ticks:{color:'#8096a7',font:{size:10}},grid:{display:false}}},plugins:{legend:{display:false},tooltip:{backgroundColor:'#1a2b3c',callbacks:{label:c=>c.raw===null?'No data':`Avg: ${c.raw.toFixed(1)} (${getMoodByScore(Math.round(c.raw)).name})`}}}}});updateChart();}
+        function updateChart(){if(!chart)return;const weeks=[];for(let i=7;i>=0;i--){const d=new Date(currentWeek);d.setDate(d.getDate()-(i*7));weeks.push(getMonday(d));}const labels=weeks.map(w=>w.toLocaleDateString('en-US',{month:'short',day:'numeric'})),data=weeks.map(ws=>{const wk=getWeekKey(ws),wr=getWeekResponses(wk);return wr.length>0?wr.reduce((s,r)=>s+r.score,0)/wr.length:null;});chart.data.labels=labels;chart.data.datasets[0].data=data;chart.update();}
+        function exportData(){const ar=getResponses();if(ar.length===0){showToast('No data to export');return;}const h=['Timestamp','Week','Name','Anonymous','Region','Mood','Score','Comment'],rows=ar.map(r=>{const m=getMoodByScore(r.score),rg=regions.find(x=>x.id===r.region);return[r.timestamp,r.week,r.name||'',r.name?'No':'Yes',rg?.name||'',m.name,r.score,`"${(r.comment||'').replace(/"/g,'""')}"`];});const csv=[h.join(','),...rows.map(r=>r.join(','))].join('\n'),blob=new Blob([csv],{type:'text/csv'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`present-state-export-${new Date().toISOString().split('T')[0]}.csv`;a.click();URL.revokeObjectURL(url);showToast('Exported!');}
+        function copySurveyLink(){document.getElementById('surveyLink').select();document.execCommand('copy');showToast('Link copied!');}
+        function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.className='toast success show';setTimeout(()=>t.classList.remove('show'),3000);}
+        function addDemoDataPrompt(){document.getElementById('statsGrid').innerHTML+=`<div class="stat-card" style="grid-column:1/-1;text-align:center"><p style="color:var(--text-secondary);margin-bottom:1rem">No responses yet. Generate demo data?</p><button class="btn" onclick="generateDemoData()">Generate Demo Data</button></div>`;}
+        function generateDemoData(){const names=['Maria Garcia','James Chen','Aisha Patel','Carlos Rodriguez','Sarah Kim','Michael Johnson','Fatima Al-Hassan','David Williams',null,null,null],comments=['Feeling good about the integration!','Workload has been manageable.','Some concerns about new scheduling.','Great team collaboration.','Need clarity on consolidation timeline.','Appreciated the town hall.',null,null,null];const dr=[];for(let w=0;w<8;w++){const wd=new Date(currentWeek);wd.setDate(wd.getDate()-(w*7));const wk=getWeekKey(wd),nr=18+Math.floor(Math.random()*12);for(let i=0;i<nr;i++){const rg=regions[Math.floor(Math.random()*regions.length)],bs=7+Math.floor(Math.random()*5),sc=Math.max(1,Math.min(14,bs+Math.floor(Math.random()*4)-2)),nm=names[Math.floor(Math.random()*names.length)];dr.push({id:`demo_${Date.now()}_${w}_${i}`,visitorId:`demo_visitor_${i%30}`,score:sc,name:nm,isAnonymous:!nm,region:Math.random()>0.1?rg.id:null,comment:Math.random()>0.55?comments[Math.floor(Math.random()*comments.length)]:null,week:wk,timestamp:new Date(wd.getTime()+Math.random()*7*24*60*60*1000).toISOString()});}}localStorage.setItem('presentState_responses',JSON.stringify(dr));renderStats();renderRegions();renderDistribution();renderResponses();renderFeedback();renderShareStats();updateChart();showToast('Demo data generated!');}
+    </script>
+</body>
+</html>
